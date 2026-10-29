@@ -1,0 +1,21 @@
+
+groups:
+  - name: network-availability
+    rules:
+      - alert: NetworkEndpointDown
+        expr: probe_success{job="blackbox"} == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Network endpoint is unavailable"
+          description: "HTTP probe has failed for {{ $labels.instance }}."
+
+      - alert: NetworkEndpointSlow
+        expr: probe_duration_seconds{job="blackbox"} > 1
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Endpoint response is slow"
+          description: "Probe duration exceeded one second."
